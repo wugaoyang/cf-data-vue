@@ -12,9 +12,15 @@
     "deploy": "npm run build && wrangler pages deploy ./dist"
   },
   "dependencies": {
+    "@vxe-ui/plugin-render-element": "^4.0.7",
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "element-plus": "^2.8.4",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3"
+    "vue-router": "^4.3.3",
+    "vxe-pc-ui": "^4.2.15",
+    "vxe-table": "^4.7.85"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241004.0",
