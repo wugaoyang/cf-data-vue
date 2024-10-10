@@ -13,6 +13,6 @@ const bestIps = ref('')
 
 function submit(){
   console.log("submit")
-  bestIp.update({'bestIp': bestIps.value})
+  bestIp.update({'bestIps': bestIps.value})
 }
 </script>

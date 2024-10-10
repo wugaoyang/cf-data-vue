@@ -19,7 +19,7 @@ import {ref} from 'vue'
 import type {VxeTablePropTypes} from 'vxe-table'
 import bestIp from "@/api/bestIp";
 
-bestIp.list()
+bestIp.list(null)
 
 interface RowVO {
   id: number
