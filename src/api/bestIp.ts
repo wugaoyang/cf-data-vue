@@ -5,7 +5,15 @@ import {ElNotification} from "element-plus";
 export const url = '/api/db/bestips/'
 
 export default  class bestIp {
-     static list(data: any) {
+     static value() {
+        return createAxios(
+            {
+                url: url,
+                method: 'get',
+            }
+        )
+    }
+    static list(data: any) {
         return createAxios(
             {
                 url: url + 'list',
