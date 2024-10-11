@@ -36,6 +36,8 @@
 import { ref } from 'vue'
 import bestIp from "@/api/bestIp";
 
+document.title = '自选优选IP更新'
+
 const bestIps = ref('')
 const area = ref('')
 const deleteOld = ref('0')
