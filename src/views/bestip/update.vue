@@ -45,13 +45,16 @@ const bestIpValue = ref([])
 function submit(){
   bestIp.update({'bestIps': bestIps.value}, area.value, deleteOld.value).then(res =>{
     getIpList()
+    init();
   })
-
 }
 
-getIpList();
+function init() {
+  getIpList();
+  getIpValue();
+}
 
-getIpValue();
+init();
 
 function getIpList() {
   bestIp.list({}).then(res => {
