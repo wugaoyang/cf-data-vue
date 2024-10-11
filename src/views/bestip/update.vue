@@ -52,17 +52,14 @@ function submit() {
   })
 }
 
-
 function getIpList() {
   bestIp.list({}).then(res => {
-    console.log(res.data)
     bestIpList.value = res.data
   })
 }
 
 function getIpValue() {
   bestIp.value().then(res => {
-    console.log(res.data)
     bestIpValue.value = res.data
   })
 }
