@@ -2,7 +2,7 @@ import createAxios from '@/utils/axios'
 import { h } from 'vue'
 import {ElNotification} from "element-plus";
 
-export const url = '/api/db/bestips/'
+export const url = '/api/db/bestIps/'
 
 export default  class bestIp {
      static value() {
