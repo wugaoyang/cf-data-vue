@@ -28,7 +28,7 @@
     </el-select>
     <el-button type="primary" @click="getIpList">查询</el-button>
   </div>
-  <el-table :data="bestIpList" style="width: 100%" :height="500">
+  <el-table :data="bestIpList" style="width: 100%" :height="500" v-loading="loading">
     <el-table-column type="index" width="50"/>
     <el-table-column prop="ip" label="IP" width="180"/>
     <el-table-column prop="name" label="名字" width="180"/>
@@ -73,6 +73,7 @@ const pageVO = reactive({
   pageSize: 10
 })
 
+const loading = ref(true)
 const name = ref("")
 const group = ref("")
 const status = ref('')
@@ -81,6 +82,7 @@ const bestIpList = ref([])
 getIpList()
 
 function getIpList() {
+  loading.value = true
   let queryData = {
     data: {name: name.value, group: group.value, status: status.value},
     pageVO: pageVO
@@ -88,6 +90,7 @@ function getIpList() {
   BestIpApi.page(queryData).then(res => {
     bestIpList.value = res.data.data
     pageVO.total = res.data.total
+    loading.value = false
   })
 }
 
