@@ -21,10 +21,10 @@ export default  class bestIp {
             }
         )
     }
-    static update(data: object, area: any, deleteOld: any) {
+    static update(data: object, group: any, deleteOld: any) {
         return createAxios(
             {
-                url: url + 'update?area=' + area +'&deleteOld=' + deleteOld,
+                url: url + 'update?group=' + group +'&deleteOld=' + deleteOld,
                 method: 'post',
                 data: data
             }
