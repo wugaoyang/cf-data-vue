@@ -2,13 +2,12 @@
   <div>
     <el-input
         v-model="group"
-        style="max-width: 600px"
+        style="max-width: 600px; width: 300px"
         placeholder="请输入分组（默认CF）"
     >
       <template #prepend>分组</template>
     </el-input>
-    <div>
-      是否删除原有的IP:
+    删除原有分组:
       <el-switch
           v-model="deleteOld"
           class="ml-2"
@@ -16,7 +15,6 @@
           :active-value=1
           :inactive-value=0
       />
-    </div>
     <vxe-textarea v-model="bestIps" placeholder="优选ip更新" :autosize="{ minRows: 10, maxRows: 20 }"
                   style="margin-bottom: 10px; margin-top: 10px"></vxe-textarea>
     <div style="text-align: right">
