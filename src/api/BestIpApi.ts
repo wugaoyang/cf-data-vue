@@ -1,11 +1,11 @@
 import createAxios from '@/utils/axios'
-import { h } from 'vue'
+import {h} from 'vue'
 import {ElNotification} from "element-plus";
 
 export const url = '/api/db/bestIps/'
 
-export default  class bestIp {
-     static value() {
+export default class BestIpApi {
+    static value() {
         return createAxios(
             {
                 url: url,
@@ -13,6 +13,17 @@ export default  class bestIp {
             }
         )
     }
+
+    static page(data: any) {
+        return createAxios(
+            {
+                url: url + 'page',
+                method: 'post',
+                data: data
+            }
+        )
+    }
+
     static list(data: any) {
         return createAxios(
             {
@@ -21,18 +32,19 @@ export default  class bestIp {
             }
         )
     }
+
     static update(data: object, group: any, deleteOld: any) {
         return createAxios(
             {
-                url: url + 'update?group=' + group +'&deleteOld=' + deleteOld,
+                url: url + 'update?group=' + group + '&deleteOld=' + deleteOld,
                 method: 'post',
                 data: data
             }
-        ).then(res =>{
-            console.log("响应",res)
+        ).then(res => {
+            console.log("响应", res)
             ElNotification({
                 title: '更新提示',
-                message: h('i', { style: 'color: teal' }, res.data),
+                message: h('i', {style: 'color: teal'}, res.data),
             })
         })
     }

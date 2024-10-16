@@ -1,44 +1,97 @@
 <template>
-  <div style="width: 100%">
-    <vxe-table
-        border
-        show-overflow
-        :edit-config="editConfig"
-        :data="tableData"
+  <div class="query">
+    <el-input
+        v-model="name"
+        style="max-width: 600px; width: 300px"
+        placeholder="请输入名字"
+        @keyup="getIpList"
     >
-      <vxe-column type="seq" width="70"></vxe-column>
-      <vxe-column field="name" title="Name" :edit-render="{name: 'input'}"></vxe-column>
-      <vxe-column field="sex" title="Sex" :edit-render="{name: 'input'}"></vxe-column>
-      <vxe-column field="age" title="Age" :edit-render="{name: 'input'}"></vxe-column>
-    </vxe-table>
+      <template #prepend>名字</template>
+    </el-input>
+    <el-input
+        v-model="group"
+        style="max-width: 600px; width: 300px"
+        placeholder="请输入分组"
+        @keyup="getIpList"
+    >
+      <template #prepend>分组</template>
+    </el-input>
+    <el-select
+        v-model="status"
+        style="max-width: 600px; width: 300px"
+        @change="getIpList"
+    >
+      <el-option label="" value=""></el-option>
+      <el-option label="启用" value="1">启用</el-option>
+      <el-option label="禁用" value="0">禁用</el-option>
+      <template #prepend>状态</template>
+    </el-select>
+    <el-button type="primary" @click="getIpList">查询</el-button>
   </div>
+  <el-table :data="bestIpList" style="width: 100%" :height="500">
+    <el-table-column type="index" width="50"/>
+    <el-table-column prop="ip" label="IP" width="180"/>
+    <el-table-column prop="name" label="名字" width="180"/>
+    <el-table-column prop="group" label="分组"/>
+    <el-table-column prop="area" label="区域"/>
+    <el-table-column prop="delay" label="延迟(ms)"/>
+    <el-table-column prop="speed" label="速度(MB/s)"/>
+    <el-table-column prop="status" label="状态"/>
+    <el-table-column prop="updatedTime" label="更新时间"/>
+  </el-table>
+
+  <!--  <vxe-table-->
+  <!--      border-->
+  <!--      height="500"-->
+  <!--      :loading="loading"-->
+  <!--      :data="bestIpList">-->
+  <!--    <vxe-table-column type="index" width="50"/>-->
+  <!--    <vxe-table-column field="ip" title="IP" width="180"/>-->
+  <!--    <vxe-table-column field="name" title="名字" width="180"/>-->
+  <!--    <vxe-table-column field="group" title="分组"/>-->
+  <!--    <vxe-table-column field="area" title="区域"/>-->
+  <!--    <vxe-table-column field="speed" title="速度(MB/s)"/>-->
+  <!--    <vxe-table-column field="status" title="状态"/>-->
+  <!--    <vxe-table-column field="updatedTime" title="更新时间"/>-->
+  <!--  </vxe-table>-->
+
+  <vxe-pager
+      v-model:currentPage="pageVO.pageIndex"
+      v-model:pageSize="pageVO.pageSize"
+      :total="pageVO.total"
+      @page-change="getIpList">
+  </vxe-pager>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
-import type {VxeTablePropTypes} from 'vxe-table'
-import bestIp from "@/api/bestIp";
+document.title = '列表'
+import {reactive, ref} from 'vue'
+import BestIpApi from "@/api/BestIpApi";
 
-bestIp.list(null)
+const pageVO = reactive({
+  total: 10,
+  pageIndex: 1,
+  pageSize: 10
+})
 
-interface RowVO {
-  id: number
-  name: string
-  role: string
-  sex: string
-  age: number
-  address: string
+const name = ref("")
+const group = ref("")
+const status = ref('')
+const bestIpList = ref([])
+
+getIpList()
+
+function getIpList() {
+  let queryData = {
+    data: {name: name.value, group: group.value, status: status.value},
+    pageVO: pageVO
+  }
+  BestIpApi.page(queryData).then(res => {
+    bestIpList.value = res.data.data
+    pageVO.total = res.data.total
+  })
 }
 
-const tableData = ref<RowVO[]>([
-  {id: 10001, name: 'Test1', role: 'Develop', sex: 'Man', age: 28, address: 'test abc'},
-  {id: 10002, name: 'Test2', role: 'Test', sex: 'Women', age: 22, address: 'Guangzhou'},
-  {id: 10003, name: 'Test3', role: 'PM', sex: 'Man', age: 32, address: 'Shanghai'},
-  {id: 10004, name: 'Test4', role: 'Designer', sex: 'Women', age: 24, address: 'Shanghai'}
-])
-
-const editConfig = ref<VxeTablePropTypes.EditConfig>({
-  trigger: 'click',
-  mode: 'cell'
-})
 </script>
+<style>
+</style>

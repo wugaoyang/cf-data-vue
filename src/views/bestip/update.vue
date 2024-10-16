@@ -8,13 +8,13 @@
       <template #prepend>分组</template>
     </el-input>
     删除原有分组:
-      <el-switch
-          v-model="deleteOld"
-          class="ml-2"
-          style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-          :active-value=1
-          :inactive-value=0
-      />
+    <el-switch
+        v-model="deleteOld"
+        class="ml-2"
+        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+        :active-value=1
+        :inactive-value=0
+    />
     <vxe-textarea v-model="bestIps" placeholder="优选ip更新" :autosize="{ minRows: 10, maxRows: 20 }"
                   style="margin-bottom: 10px; margin-top: 10px"></vxe-textarea>
     <div style="text-align: right">
@@ -29,6 +29,7 @@
           <el-table-column prop="group" label="分组"/>
           <el-table-column prop="area" label="区域"/>
           <el-table-column prop="speed" label="速度(MB/s)"/>
+          <el-table-column prop="delay" label="延迟(ms)"/>
           <el-table-column prop="status" label="状态"/>
           <el-table-column prop="updatedTime" label="更新时间"/>
         </el-table>
@@ -44,8 +45,10 @@
 
 <script lang="ts" setup>
 import {ref} from 'vue'
-import bestIp from "@/api/bestIp";
+import BestIpApi from "@/api/BestIpApi";
 import {ElLoading} from "element-plus";
+
+document.title = '更新';
 
 const activeName = ref('first')
 const updating = ref(false)
@@ -63,7 +66,7 @@ function submit() {
     text: 'Loading',
     background: 'rgba(0, 0, 0, 0.7)',
   })
-  bestIp.update({'bestIps': bestIps.value}, group.value, deleteOld.value).then(res => {
+  BestIpApi.update({'bestIps': bestIps.value}, group.value, deleteOld.value).then(res => {
     updating.value = false;
     loading.close();
     init();
@@ -71,13 +74,13 @@ function submit() {
 }
 
 function getIpList() {
-  bestIp.list({}).then(res => {
+  BestIpApi.list({}).then(res => {
     bestIpList.value = res.data
   })
 }
 
 function getIpValue() {
-  bestIp.value().then(res => {
+  BestIpApi.value().then(res => {
     bestIpValue.value = res.data
   })
 }
