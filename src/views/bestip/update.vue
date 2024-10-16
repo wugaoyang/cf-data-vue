@@ -28,6 +28,7 @@
           <el-table-column prop="name" label="名字" width="180"/>
           <el-table-column prop="group" label="分组"/>
           <el-table-column prop="area" label="区域"/>
+          <el-table-column prop="source" label="来源"/>
           <el-table-column prop="speed" label="速度(MB/s)"/>
           <el-table-column prop="delay" label="延迟(ms)"/>
           <el-table-column prop="status" label="状态"/>
