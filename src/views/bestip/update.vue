@@ -48,8 +48,6 @@ import {ref} from 'vue'
 import BestIpApi from "@/api/BestIpApi";
 import {ElLoading} from "element-plus";
 
-document.title = '更新';
-
 const activeName = ref('first')
 const updating = ref(false)
 const bestIps = ref('')

@@ -64,7 +64,6 @@
 </template>
 
 <script lang="ts" setup>
-document.title = '列表'
 import {reactive, ref} from 'vue'
 import BestIpApi from "@/api/BestIpApi";
 
