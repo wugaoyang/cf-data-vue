@@ -33,12 +33,14 @@
     <el-table-column prop="ip" label="IP" width="180"/>
     <el-table-column prop="name" label="名字" width="180"/>
     <el-table-column prop="group" label="分组"/>
-    <el-table-column prop="area" label="区域"/>
+    <el-table-column prop="cityNameCN" label="城市"/>
+    <el-table-column prop="countryCode" label="国家代码"/>
+    <el-table-column prop="countryNameCN" label="国家名字"/>
     <el-table-column prop="source" label="来源"/>
     <el-table-column prop="delay" label="延迟(ms)"/>
     <el-table-column prop="speed" label="速度(MB/s)"/>
     <el-table-column prop="status" label="状态"/>
-    <el-table-column prop="updatedTime" label="更新时间"/>
+    <el-table-column prop="updatedTime" width="170" label="更新时间"/>
   </el-table>
 
   <!--  <vxe-table-->
