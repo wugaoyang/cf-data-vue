@@ -125,7 +125,7 @@ setInterval(()=>{
   if (autoRefresh.value && !loading.value){
     getIpList();
   }
-}, 1000)
+}, 5000)
 
 function getIpList() {
   loading.value = true
