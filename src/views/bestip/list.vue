@@ -1,11 +1,12 @@
 <template>
   <div class="query">
-    <span><el-input
-        v-model="queryData.name"
-        style="max-width: 600px; width: 200px"
-        placeholder="请输入名字"
-        @keyup="getIpList"
-    >
+    <span>
+      <el-input
+          v-model="queryData.name"
+          style="max-width: 600px; width: 200px"
+          placeholder="请输入名字"
+          @keyup="getIpList"
+      >
       <template #prepend>名字</template>
     </el-input>
       </span>
@@ -54,9 +55,18 @@
       <template #prefix>可达</template>
     </el-select>
     </span>
+    <span>
     <el-button type="primary" @click="getIpList">查询</el-button>
-
+    </span>
+    <span>
+      <el-input v-model="seconds"
+                type="number"
+                style="max-width: 600px; width: 100px"
+                @change="check">
+      <template #append>秒</template>
+      </el-input>
     <el-checkbox v-model="autoRefresh">自动刷新</el-checkbox>
+      </span>
   </div>
   <el-table :data="bestIpList" style="width: 100%" :height="500" v-loading="loading">
     <el-table-column type="index" width="50"/>
@@ -107,6 +117,7 @@ const pageVO = reactive({
   pageSize: 10
 })
 
+
 const queryData = reactive({
   name: '',
   group: '',
@@ -118,14 +129,25 @@ const queryData = reactive({
 const loading = ref(true)
 const bestIpList = ref([])
 const autoRefresh = ref(false)
+const seconds = ref(3)
 
 getIpList()
 
-setInterval(()=>{
-  if (autoRefresh.value && !loading.value){
+let interval = setInterval(() => {
+  if (autoRefresh.value && !loading.value) {
     getIpList();
   }
-}, 5000)
+}, seconds.value * 1000)
+
+function check() {
+  clearInterval(interval)
+  seconds.value = seconds.value < 1 ? 1 : seconds.value;
+  interval = setInterval(() => {
+    if (autoRefresh.value && !loading.value) {
+      getIpList();
+    }
+  }, seconds.value * 1000)
+}
 
 function getIpList() {
   loading.value = true
