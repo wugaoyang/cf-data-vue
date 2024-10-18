@@ -61,7 +61,7 @@
     <span>
       <el-input v-model="seconds"
                 type="number"
-                style="max-width: 600px; width: 100px"
+                style="max-width: 600px; width: 120px"
                 @change="check">
       <template #append>秒</template>
       </el-input>
