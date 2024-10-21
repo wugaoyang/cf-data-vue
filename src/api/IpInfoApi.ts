@@ -2,13 +2,13 @@ import createAxios from '@/utils/axios'
 import {h} from 'vue'
 import {ElNotification} from "element-plus";
 
-export const url = '/api/db/ip/'
+export const url = '/api/db/ip'
 
 export default class IpInfoApi {
     static getBestIp() {
         return createAxios(
             {
-                url: url,
+                url: url + '/best',
                 method: 'get',
             }
         )
@@ -17,7 +17,7 @@ export default class IpInfoApi {
     static page(data: any) {
         return createAxios(
             {
-                url: url + 'page',
+                url: url + '/page',
                 method: 'post',
                 data: data
             }
@@ -27,7 +27,7 @@ export default class IpInfoApi {
     static list(data: any) {
         return createAxios(
             {
-                url: url + 'list',
+                url: url + '/list',
                 method: 'get',
             }
         )
@@ -36,7 +36,7 @@ export default class IpInfoApi {
     static update(data: object, group: any, deleteOld: any) {
         return createAxios(
             {
-                url: url + 'update?group=' + group + '&deleteOld=' + deleteOld,
+                url: url + '/update?group=' + group + '&deleteOld=' + deleteOld,
                 method: 'post',
                 data: data
             }
