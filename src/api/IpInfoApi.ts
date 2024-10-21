@@ -5,7 +5,7 @@ import {ElNotification} from "element-plus";
 export const url = '/api/db/ip/'
 
 export default class IpInfoApi {
-    static value() {
+    static getBestIp() {
         return createAxios(
             {
                 url: url,

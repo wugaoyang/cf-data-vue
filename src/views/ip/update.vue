@@ -78,15 +78,15 @@ function getIpList() {
   })
 }
 
-function getIpValue() {
-  IpInfoApi.value().then(res => {
+function getBestIp() {
+  IpInfoApi.getBestIp().then(res => {
     bestIpValue.value = res.data
   })
 }
 
 function init() {
   getIpList();
-  getIpValue();
+  getBestIp();
 }
 
 init();
