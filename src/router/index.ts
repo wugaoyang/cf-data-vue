@@ -18,22 +18,22 @@ const router = createRouter({
             component: () => import('../views/AboutView.vue')
         },
         {
-            path: '/bestip/list',
-            name: 'bestipList',
+            path: '/ip/list',
+            name: 'ipList',
             meta: {title: 'CF IP库'},
             // route level code-splitting
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: () => import('../views/bestip/list.vue')
+            component: () => import('@/views/ip/list.vue')
         },
         {
-            path: '/bestip/update',
-            name: 'bestipUpdate',
+            path: '/ip/update',
+            name: 'ipUpdate',
             meta: {title: '自选优选IP更新'},
             // route level code-splitting
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
-            component: () => import('../views/bestip/update.vue')
+            component: () => import('@/views/ip/update.vue')
         }
     ]
 })

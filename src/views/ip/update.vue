@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 import {ref} from 'vue'
-import BestIpApi from "@/api/BestIpApi";
+import IpInfoApi from "@/api/IpInfoApi";
 import {ElLoading} from "element-plus";
 
 const activeName = ref('first')
@@ -65,7 +65,7 @@ function submit() {
     text: 'Loading',
     background: 'rgba(0, 0, 0, 0.7)',
   })
-  BestIpApi.update({'bestIps': bestIps.value}, group.value, deleteOld.value).then(res => {
+  IpInfoApi.update({'bestIps': bestIps.value}, group.value, deleteOld.value).then(res => {
     updating.value = false;
     loading.close();
     init();
@@ -73,13 +73,13 @@ function submit() {
 }
 
 function getIpList() {
-  BestIpApi.list({}).then(res => {
+  IpInfoApi.list({}).then(res => {
     bestIpList.value = res.data
   })
 }
 
 function getIpValue() {
-  BestIpApi.value().then(res => {
+  IpInfoApi.value().then(res => {
     bestIpValue.value = res.data
   })
 }
