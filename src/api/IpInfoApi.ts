@@ -27,7 +27,7 @@ export default class IpInfoApi {
     static list(data: any) {
         return createAxios(
             {
-                url: url + '/list',
+                url: url + '/list?limit=20',
                 method: 'get',
             }
         )
