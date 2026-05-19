@@ -48,4 +48,19 @@ export default class CfIpFavoriteApi {
             })
         })
     }
+
+    static delete(ip: any) {
+        return createAxios(
+            {
+                url: url + '/delete?ip=' + ip,
+                method: 'post'
+            }
+        ).then(res => {
+            ElNotification({
+                title: '删除提示',
+                message: h('i', {style: 'color: teal'}, res.data),
+            })
+            return res;
+        })
+    }
 }
