@@ -53,7 +53,7 @@ export default class IpInfoApi {
         return createAxios(
             {
                 url: url + '/delete?ip=' + ip,
-                method: 'post'
+                method: 'get'
             }
         ).then(res => {
             ElNotification({
