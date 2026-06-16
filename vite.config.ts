@@ -14,5 +14,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://cf-data-api.tech-site.workers.dev',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 })

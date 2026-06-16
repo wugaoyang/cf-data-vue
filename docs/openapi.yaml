@@ -1,0 +1,519 @@
+﻿openapi: 3.0.3
+info:
+  title: CF Data API
+  description: Cloudflare IP database management API for self-selected IP maintenance.
+  version: 1.0.0
+  contact:
+    name: cf-data-vue
+
+servers:
+  - url: https://cf-data-api.wugaoyang.dpdns.org
+    description: Production
+  - url: https://cf-data-api.tech-site.workers.dev
+    description: Development
+
+paths:
+  /api/db/ip/best:
+    get:
+      tags:
+        - IP
+      summary: Get best IP
+      description: Get the best/recommended IP from the database.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseIp'
+              example:
+                code: 200
+                msg: success
+                data:
+                  ip: "1.2.3.4"
+                  name: "Example IP"
+                  group: "CF"
+                  area: "Asia"
+                  cityNameCN: "Beijing"
+                  cityNameEN: "Beijing"
+                  countryNameCN: "China"
+                  countryCode: "CN"
+                  source: "source"
+                  delay: 50
+                  speed: 100
+                  reachable: true
+                  status: 1
+                  updatedTime: "2025-01-01T00:00:00"
+
+  /api/db/ip/page:
+    post:
+      tags:
+        - IP
+      summary: Paginated IP list
+      description: Get a paginated list of IPs with query filters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpPageRequest'
+            example:
+              data:
+                ip: ""
+                name: ""
+                group: ""
+                countryNameCN: ""
+                countryCode: ""
+                countryCodeIsNull: false
+                status: ""
+                reachable: ""
+                delay1: null
+                delay2: null
+                speed1: null
+                speed2: null
+              pageVO:
+                pageIndex: 1
+                pageSize: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpPageResponse'
+
+  /api/db/ip/list:
+    get:
+      tags:
+        - IP
+      summary: List IPs
+      description: Get a list of IPs (first N entries).
+      parameters:
+        - name: limit
+          in: query
+          description: Number of IPs to return.
+          required: true
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseIpArray'
+
+  /api/db/ip/update:
+    post:
+      tags:
+        - IP
+      summary: Update IPs
+      description: Batch update or insert IPs.
+      parameters:
+        - name: group
+          in: query
+          description: Category/group name.
+          required: true
+          schema:
+            type: string
+        - name: deleteOld
+          in: query
+          description: Whether to delete entries in the group before insert. 1=true, 0=false.
+          required: true
+          schema:
+            type: integer
+            enum: [0, 1]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpUpdateRequest'
+            example:
+              bestIps: "1.2.3.4,5.6.7.8"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseString'
+              example:
+                code: 200
+                msg: success
+                data: "Update successful"
+
+  /api/db/ip/delete:
+    get:
+      tags:
+        - IP
+      summary: Delete IP
+      description: Delete an IP by address.
+      parameters:
+        - name: ip
+          in: query
+          description: IP address to delete.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseString'
+              example:
+                code: 200
+                msg: success
+                data: "Delete successful"
+
+  /api/db/ip/favorite/best:
+    get:
+      tags:
+        - Favorite IP
+      summary: Get best favorite IP
+      description: Get the best/recommended favorite IP.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseIp'
+              example:
+                code: 200
+                msg: success
+                data:
+                  ip: "1.2.3.4"
+                  name: "Example IP"
+                  group: "CF"
+                  area: "Asia"
+                  cityNameCN: "Beijing"
+                  cityNameEN: "Beijing"
+                  countryNameCN: "China"
+                  countryCode: "CN"
+                  source: "source"
+                  delay: 50
+                  speed: 100
+                  reachable: true
+                  status: 1
+                  updatedTime: "2025-01-01 00:00:00"
+
+  /api/db/ip/favorite/page:
+    post:
+      tags:
+        - Favorite IP
+      summary: Paginated favorite IP list
+      description: Get a paginated list of favorite IPs with query filters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpPageRequest'
+            example:
+              data:
+                ip: ""
+                name: ""
+                group: ""
+                countryNameCN: ""
+                countryCode: ""
+                countryCodeIsNull: false
+                status: ""
+                reachable: ""
+                delay1: null
+                delay2: null
+                speed1: null
+                speed2: null
+              pageVO:
+                pageIndex: 1
+                pageSize: 10
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpPageResponse'
+
+  /api/db/ip/favorite/list:
+    get:
+      tags:
+        - Favorite IP
+      summary: List favorite IPs
+      description: Get a list of favorite IPs (first N entries).
+      parameters:
+        - name: limit
+          in: query
+          description: Number of IPs to return.
+          required: true
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseIpArray'
+
+  /api/db/ip/favorite/update:
+    post:
+      tags:
+        - Favorite IP
+      summary: Update favorite IPs
+      description: Batch update or insert favorite IPs.
+      parameters:
+        - name: group
+          in: query
+          description: Category/group name.
+          required: true
+          schema:
+            type: string
+        - name: deleteOld
+          in: query
+          description: Whether to delete entries in the group before insert. 1=true, 0=false.
+          required: true
+          schema:
+            type: integer
+            enum: [0, 1]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpUpdateRequest'
+            example:
+              bestIps: "1.2.3.4,5.6.7.8"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseString'
+              example:
+                code: 200
+                msg: success
+                data: "Update successful"
+
+  /api/db/ip/favorite/delete:
+    post:
+      tags:
+        - Favorite IP
+      summary: Delete favorite IP
+      description: Delete a favorite IP by address.
+      parameters:
+        - name: ip
+          in: query
+          description: IP address to delete.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseString'
+              example:
+                code: 200
+                msg: success
+                data: "Delete successful"
+
+components:
+  schemas:
+    ApiResponseIp:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        msg:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/IpInfo'
+
+    ApiResponseIpArray:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        msg:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IpInfo'
+
+    ApiResponseString:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        msg:
+          type: string
+          example: success
+        data:
+          type: string
+          example: "success"
+
+    IpPageResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+        msg:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IpInfo'
+        total:
+          type: integer
+          example: 100
+
+    IpPageRequest:
+      type: object
+      required:
+        - data
+        - pageVO
+      properties:
+        data:
+          $ref: '#/components/schemas/IpQueryData'
+        pageVO:
+          $ref: '#/components/schemas/PageVO'
+
+    IpQueryData:
+      type: object
+      properties:
+        ip:
+          type: string
+          description: IP address filter
+        name:
+          type: string
+          description: Display name filter
+        group:
+          type: string
+          description: Group/category filter
+        countryNameCN:
+          type: string
+          description: Country name (Chinese) filter
+        countryCode:
+          type: string
+          description: Country code filter
+        countryCodeIsNull:
+          type: boolean
+          description: Filter for null country codes
+          default: false
+        status:
+          type: string
+          description: "Status field indicating enabled/disabled state"
+        reachable:
+          type: string
+          description: "Reachable status field indicating if the IP is reachable"
+        delay1:
+          type: number
+          format: integer
+          description: Delay range start (>=) in ms
+        delay2:
+          type: number
+          format: integer
+          description: Delay range end (<=) in ms
+        speed1:
+          type: number
+          format: integer
+          description: Speed range start (>=) in MB/s
+        speed2:
+          type: number
+          format: integer
+          description: Speed range end (<=) in MB/s
+
+    PageVO:
+      type: object
+      properties:
+        pageIndex:
+          type: integer
+          description: Page number (1-based)
+          default: 1
+        pageSize:
+          type: integer
+          description: Page size
+          default: 10
+
+    IpInfo:
+      type: object
+      description: IP information entity
+      properties:
+        ip:
+          type: string
+          description: IP address
+        name:
+          type: string
+          description: Display name
+        group:
+          type: string
+          description: Category/group name
+        area:
+          type: string
+          description: Geographic area
+        cityNameCN:
+          type: string
+          description: City name (Chinese)
+        cityNameEN:
+          type: string
+          description: City name (English)
+        countryNameCN:
+          type: string
+          description: Country name (Chinese)
+        countryCode:
+          type: string
+          nullable: true
+          description: Country code
+        source:
+          type: string
+          description: Data source
+        delay:
+          type: number
+          description: Network delay in milliseconds
+        speed:
+          type: number
+          description: Speed in MB/s
+        reachable:
+          type: boolean
+          description: Whether the IP is reachable
+        status:
+          type: string
+          description: "Status field indicating enabled/disabled state"
+        updatedTime:
+          type: string
+          description: Last update timestamp
+
+    IpUpdateRequest:
+      type: object
+      properties:
+        bestIps:
+          type: string
+          description: IP data content to update
+
+tags:
+  - name: IP
+    description: Base IP database operations
+  - name: Favorite IP
+    description: Favorite/specific IP set operations
