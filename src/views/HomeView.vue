@@ -16,10 +16,10 @@ const refreshTimer = ref<number | null>(null)
 const autoRefresh = ref(false)
 
 const navItems = [
-  { path: '/ip/list', title: 'IP 库管理', desc: '查看和管理 IP 列表', icon: '📋', color: '#409EFF' },
-  { path: '/ip/update', title: 'IP 更新', desc: '批量更新优选 IP', icon: '✏️', color: '#67C23A' },
-  { path: '/favorite/list', title: '收藏 IP 库', desc: '查看和管理收藏的 IP', icon: '⭐', color: '#E6A23C' },
-  { path: '/favorite/update', title: '收藏 IP 更新', desc: '批量更新收藏优选 IP', icon: '✏️', color: '#F56C6C' }
+  { path: '/ip/list', title: 'IP 库管理', desc: '查看和管理 IP 列表', icon: '📋', color: '#409eff' },
+  { path: '/ip/update', title: 'IP 更新', desc: '批量更新优选 IP', icon: '✏️', color: '#67c23a' },
+  { path: '/favorite/list', title: '收藏 IP 库', desc: '查看和管理收藏的 IP', icon: '⭐', color: '#e6a23c' },
+  { path: '/favorite/update', title: '收藏 IP 更新', desc: '批量更新收藏优选 IP', icon: '🔖', color: '#f56c6c' }
 ]
 
 async function fetchBestIp() {
@@ -88,192 +88,222 @@ onUnmounted(() => {
     clearInterval(refreshTimer.value)
   }
 })
-
 </script>
 
 <template>
-  <div class="home">
-    <div class="header">
-      <h1>CF Data Management</h1>
-      <p>Cloudflare IP Database Management</p>
+  <div class="page home">
+    <!-- 欢迎横幅 -->
+    <div class="hero">
+      <div class="hero-text">
+        <h1 class="hero-title">CF Data Management</h1>
+        <p class="hero-desc">Cloudflare IP 数据库管理面板 — 优选、收藏、统计一站式完成</p>
+      </div>
+      <div class="hero-actions">
+        <el-checkbox v-model="autoRefresh" @change="startAutoRefresh">
+          自动刷新 ({{ refreshInterval }}s)
+        </el-checkbox>
+      </div>
     </div>
 
-    <div class="auto-refresh">
-      <el-checkbox v-model="autoRefresh" @change="startAutoRefresh">
-        自动刷新 ({{ refreshInterval }}s)
-      </el-checkbox>
-    </div>
-
+    <!-- 快捷入口 -->
     <div class="cards">
-      <div class="card" v-for="item in navItems" :key="item.path" @click="router.push(item.path)">
-        <div class="card-icon" :style="{ backgroundColor: item.color + '20', color: item.color }">
+      <div class="card nav-card" v-for="item in navItems" :key="item.path" @click="router.push(item.path)">
+        <div class="card-icon" :style="{ backgroundColor: item.color + '1f', color: item.color }">
           {{ item.icon }}
         </div>
         <div class="card-content">
           <h3>{{ item.title }}</h3>
           <p>{{ item.desc }}</p>
         </div>
-        <div class="card-arrow">&#8594;</div>
+        <div class="card-arrow">→</div>
       </div>
     </div>
 
-    <div class="section-title">Best IP Status</div>
-    <div class="ip-cards">
-      <div class="status-card">
-        <h3>Default IP</h3>
-        <div v-if="loading" class="loading">Loading...</div>
-        <template v-else-if="bestIp">
-          <div class="ip-info">
-            <div class="ip-address">{{ bestIp.ip }}</div>
-            <div class="ip-detail">
-              <span>{{ bestIp.name || '-' }}</span>
-              <span>{{ bestIp.group || '-' }}</span>
-              <span>{{ bestIp.cityNameCN || '-' }}</span>
-            </div>
-            <div class="ip-metrics">
-              <div class="metric">
-                <span class="label">Delay</span>
-                <span class="value">{{ bestIp.delay != null ? bestIp.delay + 'ms' : '-' }}</span>
-              </div>
-              <div class="metric">
-                <span class="label">Speed</span>
-                <span class="value">{{ bestIp.speed != null ? bestIp.speed + ' MB/s' : '-' }}</span>
-              </div>
-              <div class="metric">
-                <span class="label">Reach</span>
-                <span class="value" :class="bestIp.reachable ? 'success' : 'danger'">
-                  {{ bestIp.reachable != null ? (bestIp.reachable ? 'Yes' : 'No') : '-' }}
-                </span>
-              </div>
-            </div>
-            <div class="ip-time">{{ bestIp.updatedTime || '-' }}</div>
+    <!-- 最佳 IP 状态 -->
+    <div class="section">
+      <h2 class="section-title">最佳 IP 状态</h2>
+      <div class="ip-cards">
+        <div class="status-card">
+          <div class="status-card-header">
+            <h3>默认 IP</h3>
+            <el-tag v-if="bestIp" type="success" size="small">
+              <span style="margin-left: 4px">●</span> 在线
+            </el-tag>
           </div>
-        </template>
-        <div v-else class="error">No data available</div>
-      </div>
+          <div v-if="loading" class="empty-state">加载中...</div>
+          <template v-else-if="bestIp">
+            <div class="ip-info">
+              <div class="ip-address mono">{{ bestIp.ip }}</div>
+              <div class="ip-detail">
+                <span class="ip-tag">{{ bestIp.name || '-' }}</span>
+                <span class="ip-tag" v-if="bestIp.group">{{ bestIp.group }}</span>
+                <span class="ip-tag" v-if="bestIp.cityNameCN">{{ bestIp.cityNameCN }}</span>
+              </div>
+              <div class="ip-metrics">
+                <div class="metric">
+                  <span class="label">延迟</span>
+                  <span class="value">{{ bestIp.delay != null ? bestIp.delay + 'ms' : '-' }}</span>
+                </div>
+                <div class="metric">
+                  <span class="label">速度</span>
+                  <span class="value">{{ bestIp.speed != null ? bestIp.speed + ' MB/s' : '-' }}</span>
+                </div>
+                <div class="metric">
+                  <span class="label">可达</span>
+                  <span class="value" :class="bestIp.reachable ? 'success' : 'danger'">
+                    {{ bestIp.reachable != null ? (bestIp.reachable ? '是' : '否') : '-' }}
+                  </span>
+                </div>
+              </div>
+              <div class="ip-time">更新于 {{ bestIp.updatedTime || '-' }}</div>
+            </div>
+          </template>
+          <div v-else class="empty-state">暂无数据</div>
+        </div>
 
-      <div class="status-card">
-        <h3>Favorite IP</h3>
-        <div v-if="loading" class="loading">Loading...</div>
-        <template v-else-if="bestFavoriteIp">
-          <div class="ip-info">
-            <div class="ip-address">{{ bestFavoriteIp.ip }}</div>
-            <div class="ip-detail">
-              <span>{{ bestFavoriteIp.name || '-' }}</span>
-              <span>{{ bestFavoriteIp.group || '-' }}</span>
-              <span>{{ bestFavoriteIp.cityNameCN || '-' }}</span>
-            </div>
-            <div class="ip-metrics">
-              <div class="metric">
-                <span class="label">Delay</span>
-                <span class="value">{{ bestFavoriteIp.delay != null ? bestFavoriteIp.delay + 'ms' : '-' }}</span>
-              </div>
-              <div class="metric">
-                <span class="label">Speed</span>
-                <span class="value">{{ bestFavoriteIp.speed != null ? bestFavoriteIp.speed + ' MB/s' : '-' }}</span>
-              </div>
-              <div class="metric">
-                <span class="label">Reach</span>
-                <span class="value" :class="bestFavoriteIp.reachable ? 'success' : 'danger'">
-                  {{ bestFavoriteIp.reachable != null ? (bestFavoriteIp.reachable ? 'Yes' : 'No') : '-' }}
-                </span>
-              </div>
-            </div>
-            <div class="ip-time">{{ bestFavoriteIp.updatedTime || '-' }}</div>
+        <div class="status-card">
+          <div class="status-card-header">
+            <h3>收藏 IP</h3>
+            <el-tag v-if="bestFavoriteIp" type="success" size="small">
+              <span style="margin-left: 4px">●</span> 在线
+            </el-tag>
           </div>
-        </template>
-        <div v-else class="error">No data available</div>
+          <div v-if="loading" class="empty-state">加载中...</div>
+          <template v-else-if="bestFavoriteIp">
+            <div class="ip-info">
+              <div class="ip-address mono">{{ bestFavoriteIp.ip }}</div>
+              <div class="ip-detail">
+                <span class="ip-tag">{{ bestFavoriteIp.name || '-' }}</span>
+                <span class="ip-tag" v-if="bestFavoriteIp.group">{{ bestFavoriteIp.group }}</span>
+                <span class="ip-tag" v-if="bestFavoriteIp.cityNameCN">{{ bestFavoriteIp.cityNameCN }}</span>
+              </div>
+              <div class="ip-metrics">
+                <div class="metric">
+                  <span class="label">延迟</span>
+                  <span class="value">{{ bestFavoriteIp.delay != null ? bestFavoriteIp.delay + 'ms' : '-' }}</span>
+                </div>
+                <div class="metric">
+                  <span class="label">速度</span>
+                  <span class="value">{{ bestFavoriteIp.speed != null ? bestFavoriteIp.speed + ' MB/s' : '-' }}</span>
+                </div>
+                <div class="metric">
+                  <span class="label">可达</span>
+                  <span class="value" :class="bestFavoriteIp.reachable ? 'success' : 'danger'">
+                    {{ bestFavoriteIp.reachable != null ? (bestFavoriteIp.reachable ? '是' : '否') : '-' }}
+                  </span>
+                </div>
+              </div>
+              <div class="ip-time">更新于 {{ bestFavoriteIp.updatedTime || '-' }}</div>
+            </div>
+          </template>
+          <div v-else class="empty-state">暂无数据</div>
+        </div>
       </div>
     </div>
 
-    <div class="section-title">IP Statistics</div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Default Library</div>
-        <div class="stat-value">{{ ipStats.total }}</div>
-        <div class="stat-desc">Total / Active</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Active</div>
-        <div class="stat-value" style="color: #67C23A">{{ ipStats.active }}</div>
-        <div class="stat-desc">of {{ ipStats.total }} IPs</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Favorite Library</div>
-        <div class="stat-value">{{ favoriteStats.total }}</div>
-        <div class="stat-desc">Total / Active</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Active</div>
-        <div class="stat-value" style="color: #67C23A">{{ favoriteStats.active }}</div>
-        <div class="stat-desc">of {{ favoriteStats.total }} IPs</div>
+    <!-- 统计 -->
+    <div class="section">
+      <h2 class="section-title">IP 统计</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">默认 IP 库</div>
+          <div class="stat-value">{{ ipStats.total }}</div>
+          <div class="stat-desc">总 IP 数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">启用中</div>
+          <div class="stat-value stat-success">{{ ipStats.active }}</div>
+          <div class="stat-desc">占 {{ ipStats.total }} 个</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">收藏 IP 库</div>
+          <div class="stat-value">{{ favoriteStats.total }}</div>
+          <div class="stat-desc">总 IP 数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">启用中</div>
+          <div class="stat-value stat-success">{{ favoriteStats.active }}</div>
+          <div class="stat-desc">占 {{ favoriteStats.total }} 个</div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.home {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+.hero {
+  background: linear-gradient(135deg, #409eff 0%, #3a8ee6 50%, #337ecc 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-md);
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.header h1 {
+.hero-title {
   font-size: 28px;
-  color: #303133;
-  margin-bottom: 8px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
 }
 
-.header p {
-  color: #909399;
+.hero-desc {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.hero-actions :deep(.el-checkbox) {
+  color: #fff;
+}
+
+.hero-actions :deep(.el-checkbox__label) {
+  color: #fff;
   font-size: 14px;
 }
 
-.auto-refresh {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+.hero-actions :deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
+  color: #fff;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
 
-.card {
+.nav-card {
   display: flex;
   align-items: center;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #ebeef5;
+  padding: var(--space-lg);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.card:hover {
-  border-color: #409eff;
-  box-shadow: 0 2px 12px rgba(64, 158, 255, 0.15);
-  transform: translateY(-2px);
+.nav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
 }
 
 .card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-right: 16px;
+  font-size: 26px;
+  margin-right: var(--space-md);
   flex-shrink: 0;
 }
 
@@ -284,57 +314,78 @@ onUnmounted(() => {
 .card-content h3 {
   margin: 0 0 4px 0;
   font-size: 16px;
-  color: #303133;
+  color: var(--text-regular);
+  font-weight: 600;
 }
 
 .card-content p {
   margin: 0;
   font-size: 13px;
-  color: #909399;
+  color: var(--text-placeholder);
 }
 
 .card-arrow {
-  font-size: 20px;
-  color: #c0c4cc;
-  margin-left: 12px;
+  font-size: 22px;
+  color: var(--text-placeholder);
+  margin-left: var(--space-sm);
+  transition: transform 0.25s ease;
+}
+
+.nav-card:hover .card-arrow {
+  transform: translateX(4px);
+  color: var(--color-primary);
+}
+
+.section {
+  margin-bottom: var(--space-lg);
 }
 
 .section-title {
-  font-size: 18px;
-  color: #303133;
-  margin: 24px 0 16px 0;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #409eff;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-regular);
+  margin: 0 0 var(--space-md) 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 16px;
+  background: var(--color-primary);
+  border-radius: 2px;
 }
 
 .ip-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 16px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: var(--space-md);
 }
 
 .status-card {
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #ebeef5;
-  padding: 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-.status-card h3 {
-  margin: 0 0 16px 0;
+.status-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.status-card-header h3 {
+  margin: 0;
   font-size: 16px;
-  color: #606266;
-}
-
-.loading, .error {
-  color: #909399;
-  text-align: center;
-  padding: 20px;
-}
-
-.error {
-  color: #f56c6c;
+  font-weight: 600;
+  color: var(--text-regular);
 }
 
 .ip-info {
@@ -343,27 +394,32 @@ onUnmounted(() => {
 
 .ip-address {
   font-size: 24px;
-  font-weight: bold;
-  color: #303133;
-  margin-bottom: 8px;
-  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
 }
 
 .ip-detail {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 12px;
-  font-size: 13px;
-  color: #606266;
+  margin-bottom: var(--space-md);
+}
+
+.ip-tag {
+  background: #f5f7fa;
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
 }
 
 .ip-metrics {
   display: flex;
   justify-content: center;
-  gap: 24px;
-  margin-bottom: 12px;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-sm);
 }
 
 .metric {
@@ -374,58 +430,36 @@ onUnmounted(() => {
 
 .metric .label {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-placeholder);
   margin-bottom: 4px;
 }
 
 .metric .value {
-  font-size: 16px;
-  font-weight: 600;
-  color: #303133;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-regular);
 }
 
 .metric .value.success {
-  color: #67c23a;
+  color: var(--color-success);
 }
 
 .metric .value.danger {
-  color: #f56c6c;
+  color: var(--color-danger);
 }
 
 .ip-time {
   font-size: 12px;
-  color: #c0c4cc;
+  color: var(--text-placeholder);
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
 }
 
-.stat-card {
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #ebeef5;
-  padding: 20px;
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #909399;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: bold;
-  color: #409eff;
-  margin-bottom: 4px;
-}
-
-.stat-desc {
-  font-size: 12px;
-  color: #c0c4cc;
+.stat-success {
+  color: var(--color-success) !important;
 }
 </style>

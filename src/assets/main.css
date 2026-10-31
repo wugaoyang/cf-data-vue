@@ -1,0 +1,53 @@
+@import './base.css';
+
+/* ========== 全局补充 ========== */
+
+/* 滚动条美化(WebKit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #909399;
+}
+
+/* 文字省略 */
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 等宽字体(IP 地址) */
+.mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 13px;
+}
+
+/* 页面内边距的工具类 */
+.mt-lg { margin-top: var(--space-lg) !important; }
+.mb-md { margin-bottom: var(--space-md) !important; }
+
+/* Element Plus 按钮统一过渡 */
+.el-button {
+  transition: all 0.2s ease;
+}
+
+.el-button:hover {
+  transform: translateY(-1px);
+}
+
+/* 链接无下划线 */
+a {
+  text-decoration: none;
+}

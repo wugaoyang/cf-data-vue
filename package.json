@@ -14,7 +14,6 @@
   "dependencies": {
     "@vxe-ui/plugin-render-element": "^4.0.7",
     "axios": "^1.7.7",
-    "cors": "^2.8.5",
     "element-plus": "^2.8.4",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
@@ -31,6 +30,8 @@
     "@vue/tsconfig": "^0.5.1",
     "npm-run-all2": "^6.2.0",
     "typescript": "^5.6.3",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.27.3",
     "vite": "^5.3.1",
     "vue-tsc": "^2.0.21",
     "wrangler": "^3.80.2"
